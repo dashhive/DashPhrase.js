@@ -144,3 +144,13 @@ Dashphrase.base2048.includes("brocolli"); // false
 });
 // [ "brocolli" ]
 ```
+
+## LICENSE
+
+Copyright 2023 Dash Incubator \
+ (forked from [therootcompany/passphrase.js][passphrase-js], re-license as MIT
+with permission) \
+Copyright 2021 AJ ONeal (MPL-2.0 License) \
+Copyright 2021 Root, LLC (MPL-2.0 License)
+
+[passphrase-js]: https://github.com/therootcompany/passphrase.js
