@@ -1,7 +1,9 @@
 var PassphraseTest = {};
 
-(async function () {
+(async function (window) {
   "use strict";
+
+  let Dashphrase = exports.Dashphrase || require("./dashphrase.js");
 
   // Copied from the reference implementation
   // https://github.com/trezor/python-mnemonic/blob/master/vectors.json
@@ -228,23 +230,30 @@ var PassphraseTest = {};
         throw new Error("bad seed");
       }
     }, Promise.resolve());
+    console.info("\tPass: Trezor python-mnemonics all pass");
 
     await Dashphrase.checksum(
       "apple apple apple apple apple apple apple apple apple apple apple apple",
     ).catch(function (err) {
-      console.error("err", err);
       if (!err.message.includes("checksum")) {
         throw err;
       }
+      console.info("\tPass: bad checksum throws error");
     });
 
     await Dashphrase.checksum("a a a a a a a a a a a a").catch(function (err) {
-      console.error("err", err);
       if (!err.message.includes("word")) {
         throw err;
       }
+      console.info("\tPass: using invalid words throws error");
     });
 
-    console.info("Tests Pass");
+    console.info("Result: ✅ All tests pass");
   };
-})();
+
+  if ("undefined" !== typeof module) {
+    if (require.main === module) {
+      await PassphraseTest.run();
+    }
+  }
+})(("undefined" !== typeof module && {}) ?? window);

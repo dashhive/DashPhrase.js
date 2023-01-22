@@ -114,14 +114,14 @@ await Dashphrase.decode(words);
 // Uint8Array[12] <0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255>
 ```
 
-### Dashphrase.toSeed(passphrase, other)
+### Dashphrase.toSeed(passphraseMnemonic, saltPassword)
 
 Generate a private key seed or encryption key based on the passphrase (mnemonic
 word list) and some other string - whether a salt, a password, another
 passphrase or secret, or an id of some kind.
 
 ```js
-await Dashphrase.toSeed(passphrase, other || ""); // Uint8Array[64]
+await Dashphrase.toSeed(passphraseMnemonic, saltPassword || ""); // Uint8Array[64]
 ```
 
 ### Dashphrase.base2048.includes(word)
@@ -143,6 +143,16 @@ Dashphrase.base2048.includes("brocolli"); // false
   return word && !Dashphrase.base2048.includes(word);
 });
 // [ "brocolli" ]
+```
+
+## Compatibility Testing
+
+- Passes Trezor's
+  [python-mnemonic](https://github.com/trezor/python-mnemonic/blob/master/vectors.json)
+  tests
+
+```sh
+npm run test
 ```
 
 ## LICENSE
