@@ -184,6 +184,18 @@ var PassphraseTest = {};
     return arr;
   }
 
+  function bufferToHex(u8) {
+    /** @type {Array<String>} */
+    let hex = [];
+
+    u8.forEach(function (b) {
+      let h = b.toString(16).padStart(2, "0");
+      hex.push(h);
+    });
+
+    return hex.join("");
+  }
+
   PassphraseTest.hexToBuffer = hexToBuffer;
 
   PassphraseTest.run = async function (fixtures = PassphraseTest.fixtures) {
@@ -192,7 +204,7 @@ var PassphraseTest = {};
 
       let knownEnt = test[0];
       let knownWords = test[1];
-      let knownKey = test[2];
+      let knownSeed = test[2];
 
       let words = await Passphrase.encode(hexToBuffer(knownEnt));
       if (words !== knownWords) {
@@ -200,13 +212,20 @@ var PassphraseTest = {};
         console.warn(words);
         throw new Error("bad word generation");
       }
-      if (!(await Passphrase.checksum(words))) {
+
+      let goodChecksum = await Passphrase.checksum(words);
+      if (!goodChecksum) {
         console.warn(words);
         throw new Error("bad checksum");
       }
-      if (!(await Passphrase.pbkdf2(words, "TREZOR"))) {
+
+      let seedBuf = await Passphrase.pbkdf2(words, "TREZOR");
+      let seed = bufferToHex(seedBuf);
+      if (seed !== knownSeed) {
         console.warn(words);
-        throw new Error("bad checksum");
+        console.warn(seed);
+        console.warn(knownSeed);
+        throw new Error("bad seed");
       }
     }, Promise.resolve());
 
