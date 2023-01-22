@@ -123,7 +123,7 @@ var Dashphrase = {};
     let expected = hash[0].toString(2).padStart(8, "0").slice(0, sumBitLen);
     if (expected !== checksum) {
       throw new Error(
-        `dashphrase.js: bad checksum: expected '${expected}' but got '${checksum}'`
+        `dashphrase.js: bad checksum: expected '${expected}' but got '${checksum}'`,
       );
     }
 
@@ -150,7 +150,7 @@ var Dashphrase = {};
       saltBytes,
       iterations,
       bitLen,
-      hashname
+      hashname,
     );
 
     return new Uint8Array(keyAB);
@@ -163,7 +163,7 @@ var Dashphrase = {};
     salt,
     iterations,
     bitLen,
-    hashname
+    hashname,
   ) {
     let extractable = false;
 
@@ -173,7 +173,7 @@ var Dashphrase = {};
       bytes,
       { name: "PBKDF2" },
       extractable,
-      ["deriveKey"]
+      ["deriveKey"],
     );
 
     // Derive a key from the password
@@ -183,7 +183,7 @@ var Dashphrase = {};
       passphraseKey,
       { name: "HMAC", hash: hashname, length: bitLen }, // Key we want
       extractable, // Extractble
-      ["sign", "verify"] // For new key
+      ["sign", "verify"], // For new key
     );
 
     // Export it so we can display it

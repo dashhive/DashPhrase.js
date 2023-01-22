@@ -230,7 +230,7 @@ var PassphraseTest = {};
     }, Promise.resolve());
 
     await Dashphrase.checksum(
-      "apple apple apple apple apple apple apple apple apple apple apple apple"
+      "apple apple apple apple apple apple apple apple apple apple apple apple",
     ).catch(function (err) {
       console.error("err", err);
       if (!err.message.includes("checksum")) {
