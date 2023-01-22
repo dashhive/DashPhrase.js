@@ -34,7 +34,7 @@ Lightweight. Zero dependencies. 20kb (17kb min, 7.4kb gz) ~150 LoC. \
 **Node** & **Bundlers**:
 
 ```sh
-npm install --save dashphrase
+npm install --save dashphrase@1.2.2
 ```
 
 ```js
@@ -46,7 +46,7 @@ let Dashphrase = require("dashphrase");
 **Browsers**
 
 ```html
-<script src="https://unpkg.com/dashphrase/dashphrase.js"></script>
+<script src="https://unpkg.com/dashphrase@1.2.2/dashphrase.js"></script>
 <script type="module">
   "use strict";
 
