@@ -12,34 +12,6 @@ Lightweight. Zero dependencies. 20kb (17kb min, 7.4kb gz) ~150 LoC. \
 [bip39]: https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 [dashphrasejs]: https://github.com/dashhive/dashphrase.js
 
-```html
-<script src="https://unpkg.com/dashphrase/dashphrase.js"></script>
-<script type="module">
-  "use strict";
-
-  let Dashphrase = window.Dashphrase;
-
-  let passphrase = await Dashphrase.generate(128);
-  // often delay margin arch
-  // index wrap fault duck
-  // club fabric demise scout
-
-  let keyBytes = await Dashphrase.pbkdf2(passphrase);
-  // Uint8Array[64] (suitable for use with importKey for AES, etc)
-
-  let fooKeyBytes = await Dashphrase.pbkdf2(passphrase, "foo");
-  // Uint8Array[64] (a completely different key, determined by "foo")
-</script>
-```
-
-| Target Entropy |         Number of Words | Total Bits                             |
-| -------------- | ----------------------: | :------------------------------------- |
-| 128-bit        | 12 words @ 11 bits each | = 132 bits (128 bits + 4-bit checksum) |
-| 160-bit        | 15 words @ 11 bits each | = 165 bits (160 bits + 5-bit checksum) |
-| 192-bit        | 18 words @ 11 bits each | = 198 bits (192 bits + 6-bit checksum) |
-| 224-bit        | 21 words @ 11 bits each | = 231 bits (224 bits + 7-bit checksum) |
-| 256-bit        | 24 words @ 11 bits each | = 264 bits (256 bits + 8-bit checksum) |
-
 ## Features & Use Cases
 
 - [x] Base2048 (BIP-0039 compliant)
@@ -49,13 +21,83 @@ Lightweight. Zero dependencies. 20kb (17kb min, 7.4kb gz) ~150 LoC. \
 - [x] Air Gap security
 - [x] Cryptocurrency wallets
 
+| Target Entropy |         Number of Words | Total Bits                             |
+| -------------- | ----------------------: | :------------------------------------- |
+| 128-bit        | 12 words @ 11 bits each | = 132 bits (128 bits + 4-bit checksum) |
+| 160-bit        | 15 words @ 11 bits each | = 165 bits (160 bits + 5-bit checksum) |
+| 192-bit        | 18 words @ 11 bits each | = 198 bits (192 bits + 6-bit checksum) |
+| 224-bit        | 21 words @ 11 bits each | = 231 bits (224 bits + 7-bit checksum) |
+| 256-bit        | 24 words @ 11 bits each | = 264 bits (256 bits + 8-bit checksum) |
+
+## Install
+
+**Node** & **Bundlers**:
+
+```sh
+npm install --save dashphrase
+```
+
+```js
+"use strict";
+
+let Dashphrase = require("dashphrase");
+```
+
+**Browsers**
+
+```html
+<script src="https://unpkg.com/dashphrase/dashphrase.js"></script>
+<script type="module">
+  "use strict";
+
+  let Dashphrase = window.Dashphrase;
+  // ...
+</script>
+```
+
+## Usage
+
+```js
+let passphrase = await Dashphrase.generate(128);
+// often delay margin arch
+// index wrap fault duck
+// club fabric demise scout
+
+let keyBytes = await Dashphrase.toSeed(passphrase);
+// Uint8Array[64] (suitable for use with importKey for AES, etc)
+
+let fooKeyBytes = await Dashphrase.toSeed(passphrase, "foo");
+// Uint8Array[64] (a completely different key, determined by "foo")
+```
+
+## Fixture
+
+This is the official Dashphrase test phrase:
+
+```text
+zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong
+```
+
+That's eleven (11) 'zoo's and one (1) 'wrong'.
+
+If we decode that, we get the "_input entropy_". If we run the appropriate _Key
+Derivation_ on that _entropy_ we get the "_seed_". Described as JSON:
+
+```json
+{
+  "inputEntropy": "ffffffffffffffffffffffffffffffff",
+  "mnemonic": "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong",
+  "seed": "ac27495480225222079d7be181583751e86f571027b0497b5b5d11218e0a8a13332572917f0f8e5a589620c6f15b11c61dee327651a14c34e18231052e48c069"
+}
+```
+
 ## API
 
 - generate
   - encode
 - checksum
   - decode
-- pbkdf2
+- toSeed
 - base2048.includes
 
 ### Dashphrase.generate(bitlen)

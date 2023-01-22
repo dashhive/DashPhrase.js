@@ -85,7 +85,7 @@ ozone drill grab fiber curtain grace pudding thank cruise elder eight picnic</te
         let salt = $(".js-salt").value;
 
         await Passphrase.checksum(passphrase).catch(rethrow);
-        let key = await Passphrase.pbkdf2(passphrase, salt);
+        let key = await Passphrase.toSeed(passphrase, salt);
         $(".js-key").innerText = PassphraseTest.bytesToHex(key);
       }
 
