@@ -1,6 +1,6 @@
 {
   "name": "dashphrase",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Dash HD Wallet Passphrase generator. Secure, lightweight, BIP-39-compatible Base2048 mnemonic word lists. Works in Node, Bundlers, and Browsers.",
   "main": "passphrase.js",
   "browser": {
