@@ -3,7 +3,7 @@ var PassphraseTest = {};
 (async function (window) {
   "use strict";
 
-  let Dashphrase = exports.Dashphrase || require("./dashphrase.js");
+  let Dashphrase = window.Dashphrase || require("./dashphrase.js");
 
   // Copied from the reference implementation
   // https://github.com/trezor/python-mnemonic/blob/master/vectors.json
@@ -256,4 +256,4 @@ var PassphraseTest = {};
       await PassphraseTest.run();
     }
   }
-})(("undefined" !== typeof module && {}) ?? window);
+})(("undefined" !== typeof module && {}) || window);

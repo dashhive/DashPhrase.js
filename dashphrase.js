@@ -231,4 +231,4 @@ var Dashphrase = {};
   } else {
     window.Dashphrase = Dashphrase;
   }
-})(("undefined" !== typeof module && {}) ?? window);
+})(("undefined" !== typeof module && {}) || window);

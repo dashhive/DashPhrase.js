@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8" />
     <link rel="stylesheet" href="https://unpkg.com/mvp.css" />
   </head>
 
@@ -22,7 +23,8 @@
       </p>
       <br />
       <code
-        >&lt;script src="https://unpkg.com/dashphrase"&gt;&lt;/script&gt;
+        >&lt;script
+        src="https://unpkg.com/dashphrase/dashphrase.js"&gt;&lt;/script&gt;
         <br />&lt;script&gt;Dashphrase.generate(128).then(console.log)&lt;/script&gt;</code
       >
     </header>
@@ -73,7 +75,7 @@ ozone drill grab fiber curtain grace pudding thank cruise elder eight picnic</te
         return (el || document).querySelectorAll(sel);
       }
 
-      // Passphrase Demo & Tests
+      // Dashphrase Demo & Tests
       // See https://github.com/dashhive/dashphrase.js
       function rethrow(err) {
         window.alert(err.message);
@@ -84,8 +86,8 @@ ozone drill grab fiber curtain grace pudding thank cruise elder eight picnic</te
         let passphrase = $(".js-passphrase").value;
         let salt = $(".js-salt").value;
 
-        await Passphrase.checksum(passphrase).catch(rethrow);
-        let key = await Passphrase.toSeed(passphrase, salt);
+        await Dashphrase.checksum(passphrase).catch(rethrow);
+        let key = await Dashphrase.toSeed(passphrase, salt);
         $(".js-key").innerText = PassphraseTest.bytesToHex(key);
       }
 
@@ -93,8 +95,8 @@ ozone drill grab fiber curtain grace pudding thank cruise elder eight picnic</te
         ev.preventDefault();
         ev.stopPropagation();
 
-        let passphrase = await Passphrase.generate(128).catch(rethrow);
-        await Passphrase.checksum(passphrase).catch(rethrow);
+        let passphrase = await Dashphrase.generate(128).catch(rethrow);
+        await Dashphrase.checksum(passphrase).catch(rethrow);
         $(".js-passphrase").value = passphrase;
         await deriveKey();
       });
