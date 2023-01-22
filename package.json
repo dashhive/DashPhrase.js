@@ -1,32 +1,32 @@
 {
-  "name": "@root/passphrase",
-  "version": "1.1.0",
-  "description": "A (BIP-39 compatible) base2048 passphrase generator for browser JavaScript.",
-  "main": "passphrase.js",
-  "scripts": {
-    "test": "open index.html"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/therootcompany/passphrase.js.git"
-  },
-  "keywords": [
-    "bip-0039",
-    "bip39",
-    "base2048",
-    "passphrase",
-    "word",
-    "list",
-    "aes",
-    "encryption",
-    "key",
-    "bip-39",
-    "wallet"
-  ],
-  "author": "AJ ONeal <coolaj86@gmail.com> (https://coolaj86.com/)",
-  "license": "MPL-2.0",
-  "bugs": {
-    "url": "https://github.com/therootcompany/passphrase.js/issues"
-  },
-  "homepage": "https://therootcompany.github.io/passphrase.js/"
+    "name": "dashphrase",
+    "version": "1.1.0",
+    "description": "Dash Wallet Passphrase (mnemonic) secure, random generator. Works in Node, WebPack, Vite, and Browsers. BIP-39, Base2048 compatible.",
+    "main": "passphrase.js",
+    "scripts": {
+        "test": "open index.html"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dashhive/dashphrase.js.git"
+    },
+    "keywords": [
+        "bip-0039",
+        "bip39",
+        "base2048",
+        "passphrase",
+        "word",
+        "list",
+        "aes",
+        "encryption",
+        "key",
+        "bip-39",
+        "wallet"
+    ],
+    "author": "AJ ONeal <aj@therootcompany.com> (https://coolaj86.com/)",
+    "license": "MPL-2.0",
+    "bugs": {
+        "url": "https://github.com/dashhive/dashphrase.js/issues"
+    },
+    "homepage": "https://dashhive.github.io/dashphrase.js/"
 }

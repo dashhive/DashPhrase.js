@@ -7,12 +7,12 @@
   <body>
     <header>
       <h1>
-        <a href="https://github.com/therootcompany/passphrase.js"
-          >Passphrase.js</a
-        >
+        <a href="https://github.com/dashhive/dashphrase.js">Passphrase.js</a>
       </h1>
       <p>
-        <strong>Passphrase &amp; Key Generator</strong> for Browser JavaScript.
+        <strong>Dash HD Wallet Passphrase &amp; Key Generator</strong>
+        <br />
+        <small>works in Node, Bundlers, and Browsers</small>
       </p>
       <p>BIP-39 (Base2048) Compatible. Lightweight. Zero Dependencies.</p>
       <p>
@@ -22,7 +22,7 @@
       </p>
       <br />
       <code
-        >&lt;script src="https://unpkg.com/@root/passphrase"&gt;&lt;/script&gt;
+        >&lt;script src="https://unpkg.com/dashphrase"&gt;&lt;/script&gt;
         <br />&lt;script&gt;Passphrase.generate(128).then(console.log)&lt;/script&gt;</code
       >
     </header>
@@ -61,7 +61,7 @@ ozone drill grab fiber curtain grace pudding thank cruise elder eight picnic</te
       </section>
     </main>
 
-    <script src="./passphrase.js"></script>
+    <script src="./dashphrase.js"></script>
     <script>
       // AJQuery
       // See https://github.com/coolaj86/ajquery.js
@@ -74,7 +74,7 @@ ozone drill grab fiber curtain grace pudding thank cruise elder eight picnic</te
       }
 
       // Passphrase Demo & Tests
-      // See https://github.com/therootcompany/passphrase.js
+      // See https://github.com/dashhive/dashphrase.js
       function rethrow(err) {
         window.alert(err.message);
         throw err;
@@ -118,7 +118,7 @@ ozone drill grab fiber curtain grace pudding thank cruise elder eight picnic</te
         .catch(function (err) {
           console.error(err);
           document.querySelector(
-            ".js-tests"
+            ".js-tests",
           ).innerText = `Tests FAILED: ${err.message}`;
         });
     </script>

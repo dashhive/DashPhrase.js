@@ -1,31 +1,33 @@
-# [passphrase.js][passphrasejs] (for browsers)
+# [dashphrase.js][dashphrasejs] (for browsers)
 
-A ([BIP-39][bip39] compatible) **Base2048 Passphrase & Key Generator** for
-browser JavaScript.
+Secure Dash HD Wallet Passphrase Generator that works in Node, Bundlers, and
+Browsers.
 
-Lightweight. Zero dependencies. 20kb (17kb min, 7.4kb gz) ~150 LoC.
+[BIP-39][bip39]-compatible \
+<small>uses standard dictionary of Base2048 mnemonic passphrases (word lists)</small>
 
-(most of the package weight is due to the base2048 word list)
+Lightweight. Zero dependencies. 20kb (17kb min, 7.4kb gz) ~150 LoC. \
+<small>(most of the package weight is due to the base2048 word list)</small>
 
 [bip39]: https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
-[passphrasejs]: https://github.com/therootcompany/passphrase.js
+[dashphrasejs]: https://github.com/dashhive/dashphrase.js
 
 ```html
-<script src="https://unpkg.com/@root/passphrase"></script>
+<script src="https://unpkg.com/dashphrase/dashphrase.js"></script>
 <script type="module">
   "use strict";
 
-  let Passphrase = window.Passphrase;
+  let Dashphrase = window.Dashphrase;
 
-  let passphrase = await Passphrase.generate(128);
+  let passphrase = await Dashphrase.generate(128);
   // often delay margin arch
   // index wrap fault duck
   // club fabric demise scout
 
-  let keyBytes = await Passphrase.pbkdf2(passphrase);
+  let keyBytes = await Dashphrase.pbkdf2(passphrase);
   // Uint8Array[64] (suitable for use with importKey for AES, etc)
 
-  let fooKeyBytes = await Passphrase.pbkdf2(passphrase, "foo");
+  let fooKeyBytes = await Dashphrase.pbkdf2(passphrase, "foo");
   // Uint8Array[64] (a completely different key, determined by "foo")
 </script>
 ```
@@ -56,15 +58,15 @@ Lightweight. Zero dependencies. 20kb (17kb min, 7.4kb gz) ~150 LoC.
 - pbkdf2
 - base2048.includes
 
-### Passphrase.generate(bitlen)
+### Dashphrase.generate(bitlen)
 
 Generate a "Base2048" passphrase - each word represents 11 bits of entropy.
 
 ```js
-await Passphrase.generate(bitLen); // *128*, 160, 192, 224, or 256
+await Dashphrase.generate(bitLen); // *128*, 160, 192, 224, or 256
 ```
 
-### Passphrase.encode(bytes)
+### Dashphrase.encode(bytes)
 
 Encode an array of 16, 20, 24, 28, or 32 bytes (typically a `Uint8Array`) into a
 passphrase using the Base2048 word list dictionary.
@@ -72,11 +74,11 @@ passphrase using the Base2048 word list dictionary.
 ```js
 let bytes = Uint8Array.from([0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255]);
 
-await Passphrase.encode(bytes);
+await Dashphrase.encode(bytes);
 // "abstract way divert acid useless legend advance theme youth"
 ```
 
-### Passphrase.checksum(passphrase)
+### Dashphrase.checksum(passphrase)
 
 We all make mistakes. Especially typos.
 
@@ -86,18 +88,18 @@ that's a start.
 
 ```js
 let passphrase = "often delay margin arch ...";
-await Passphrase.checksum(passphrase); // true
+await Dashphrase.checksum(passphrase); // true
 ```
 
 ```js
 let passphrase = "often delay margin arch TYPO";
-await Passphrase.checksum(passphrase).catch(function (err) {
+await Dashphrase.checksum(passphrase).catch(function (err) {
   // checksum failed?
   throw err;
 });
 ```
 
-### Passphrase.decode(words)
+### Dashphrase.decode(words)
 
 Decode an string of space-delimited words from the Base2048 dictionary into a
 Uint8Array.
@@ -108,37 +110,37 @@ the checksum does not match.
 ```js
 let words = "abstract way divert acid useless legend advance theme youth";
 
-await Passphrase.decode(words);
+await Dashphrase.decode(words);
 // Uint8Array[12] <0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255>
 ```
 
-### Passphrase.pbkdf2(passphrase, other)
+### Dashphrase.toSeed(passphrase, other)
 
-Generate a private key seed or encryption key based on the passphrase and some
-other string - whether a salt, a password, another passphrase or secret, or an
-id of some kind.
+Generate a private key seed or encryption key based on the passphrase (mnemonic
+word list) and some other string - whether a salt, a password, another
+passphrase or secret, or an id of some kind.
 
 ```js
-await Passphrase.pbkdf2(passphrase, other || ""); // Uint8Array[64]
+await Dashphrase.toSeed(passphrase, other || ""); // Uint8Array[64]
 ```
 
-### Passphrase.base2048.includes(word)
+### Dashphrase.base2048.includes(word)
 
 Check if a given word exists in the base2048 dictionary.
 
 ```js
-Passphrase.base2048.includes("broccoli"); // true
+Dashphrase.base2048.includes("broccoli"); // true
 ```
 
 ```js
-Passphrase.base2048.includes("brocolli"); // false
+Dashphrase.base2048.includes("brocolli"); // false
 ```
 
 #### Get all misspelled words
 
 ```js
 "hammer spoon brocolli zoo".split(" ").filter(function (word) {
-  return word && !Passphrase.base2048.includes(word);
+  return word && !Dashphrase.base2048.includes(word);
 });
 // [ "brocolli" ]
 ```

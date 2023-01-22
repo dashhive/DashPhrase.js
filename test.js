@@ -206,20 +206,20 @@ var PassphraseTest = {};
       let knownWords = test[1];
       let knownSeed = test[2];
 
-      let words = await Passphrase.encode(hexToBuffer(knownEnt));
+      let words = await Dashphrase.encode(hexToBuffer(knownEnt));
       if (words !== knownWords) {
         console.warn(knownWords);
         console.warn(words);
         throw new Error("bad word generation");
       }
 
-      let goodChecksum = await Passphrase.checksum(words);
+      let goodChecksum = await Dashphrase.checksum(words);
       if (!goodChecksum) {
         console.warn(words);
         throw new Error("bad checksum");
       }
 
-      let seedBuf = await Passphrase.pbkdf2(words, "TREZOR");
+      let seedBuf = await Dashphrase.toSeed(words, "TREZOR");
       let seed = bufferToHex(seedBuf);
       if (seed !== knownSeed) {
         console.warn(words);
@@ -229,7 +229,7 @@ var PassphraseTest = {};
       }
     }, Promise.resolve());
 
-    await Passphrase.checksum(
+    await Dashphrase.checksum(
       "apple apple apple apple apple apple apple apple apple apple apple apple"
     ).catch(function (err) {
       console.error("err", err);
@@ -238,7 +238,7 @@ var PassphraseTest = {};
       }
     });
 
-    await Passphrase.checksum("a a a a a a a a a a a a").catch(function (err) {
+    await Dashphrase.checksum("a a a a a a a a a a a a").catch(function (err) {
       console.error("err", err);
       if (!err.message.includes("word")) {
         throw err;
