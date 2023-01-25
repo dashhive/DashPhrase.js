@@ -6,6 +6,10 @@
   "browser": {
     "crypto": false
   },
+  "files": [
+    "./dashphrase.js",
+    "./jsconfig.json"
+  ],
   "scripts": {
     "bump": "npm version -m \"chore(release): bump to v%s\"",
     "fmt": "npx -p prettier@2.x -- prettier -w '**/*.{js,md}'",
