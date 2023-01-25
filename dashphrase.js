@@ -1,6 +1,22 @@
-var Dashphrase = {};
+/**
+ * @typedef Dashphrase
+ * @prop {Array<String>} base2048
+ * @prop {PhraseChecksum} checksum
+ * @prop {PhraseDecode} decode
+ * @prop {EntropyEncode} encode
+ * @prop {PhraseGenerate} generate
+ * @prop {PhraseToSeed} toSeed
+ * @prop {String} _mword - magic salt prefix
+ * @prop {Function} _normalize - strings to NFKD form
+ * @prop {Function} _pbkdf2 - the raw PBKDF2 function
+ * @prop {RegExp} _sep - mnemonic word separators
+ * @prop {Function} _sha256 - the raw SHA256 function
+ */
 
-(function (window) {
+/** @type {Dashphrase} */
+//@ts-ignore
+var Dashphrase = (globalThis.require && exports) || {};
+(function (window, Dashphrase) {
   "use strict";
 
   let crypto = window.crypto || require("node:crypto");
@@ -13,19 +29,15 @@ var Dashphrase = {};
   // because I typo this word every time...
   Dashphrase._mword = "mnemonic";
 
-  // puts the passphrase in canonical form
-  // (UTF-8 NKFD, lowercase, no extra spaces)
+  /**
+   * puts the passphrase in canonical form
+   * (UTF-8 NKFD, lowercase, no extra spaces)
+   * @param {String} str
+   */
   Dashphrase._normalize = function (str) {
     return str.normalize("NFKD").trim().toLowerCase();
   };
 
-  /**
-   * @param {number} bitLen - The target entropy - must be 128, 160, 192, 224,
-   *                          or 256 bits.
-   * @returns {string} - The passphrase will be a space-delimited list of 12,
-   *                     15, 18, 21, or 24 words from the "base2048" word list
-   *                     dictionary.
-   */
   Dashphrase.generate = async function (bitLen = 128) {
     let byteLen = bitLen / 8;
     // ent
@@ -33,30 +45,32 @@ var Dashphrase = {};
     return await Dashphrase.encode(bytes);
   };
 
-  /**
-   * @param {ArrayLike<number>} bytes - The bytes to encode as a word list
-   * @returns {string} - The passphrase will be a space-delimited list of 12,
-   *                     15, 18, 21, or 24 words from the "base2048" word list
-   *                     dictionary.
-   */
   Dashphrase.encode = async function (bytes) {
     let bitLen = 8 * bytes.length;
     // cs
     let sumBitLen = bitLen / 32;
 
-    let hash = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+    bytes = new Uint8Array(bytes);
+    let hashAb = await crypto.subtle.digest("SHA-256", bytes);
+    let hashBuf = new Uint8Array(hashAb);
 
     // convert to binary string (literal '0010011110....'
-    let digits = bytes.reduce(function (str, n) {
-      return str + n.toString(2).padStart(8, "0");
-    }, "");
-    let checksum = hash[0].toString(2).padStart(8, "0").slice(0, sumBitLen);
-    digits += checksum;
+    let bits = "";
+    bytes.forEach(function (n) {
+      let b = n.toString(2).padStart(8, "0");
+      bits += b;
+    });
+    let checkByte = hashBuf[0];
+    let checkBits = checkByte.toString(2);
+    checkBits = checkBits.padStart(8, "0");
+
+    let checksum = checkBits.slice(0, sumBitLen);
+    bits += checksum;
 
     let seed = [];
     for (let bit = 0; bit < bitLen + sumBitLen; bit += 11) {
       // 11-bit integer (0-2047)
-      let i = parseInt(digits.slice(bit, bit + 11).padStart(8, "0"), 2);
+      let i = parseInt(bits.slice(bit, bit + 11).padStart(8, "0"), 2);
       seed.push(i);
     }
 
@@ -67,34 +81,32 @@ var Dashphrase = {};
     return words.join(" ");
   };
 
-  /**
-   * @param {string} passphrase - Same as from Dashphrase.generate(...).
-   * @returns {boolean} - True if the leftover checksum bits (4, 5, 6, 7, or 8)
-   *                      match the expected values.
-   */
   Dashphrase.checksum = async function (passphrase) {
     await Dashphrase.decode(passphrase);
     return true;
   };
 
-  /**
-   * @param {string} passphrase - The bytes to encode as a word list
-   * @returns {Uint8Array} - The byte representation of the passphrase.
-   */
   Dashphrase.decode = async function (passphrase) {
     passphrase = Dashphrase._normalize(passphrase);
 
     // there must be 12, 15, 18, 21, or 24 words
-    let ints = passphrase.split(Dashphrase._sep).reduce(function (arr, word) {
-      // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
-      // 0-2047 (11-bit ints)
-      let index = Dashphrase.base2048.indexOf(word);
-      if (index < 0) {
-        throw new Error(`dashphrase.js: decode failed: unknown word '${word}'`);
-      }
-      arr.push(index);
-      return arr;
-    }, []);
+    /** @type {Array<Number>} */
+    let ints = [];
+    let words = passphrase.split(Dashphrase._sep);
+    words.forEach(
+      /** @param {String} word */
+      function (word) {
+        // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+        // 0-2047 (11-bit ints)
+        let index = Dashphrase.base2048.indexOf(word);
+        if (index < 0) {
+          throw new Error(
+            `dashphrase.js: decode failed: unknown word '${word}'`,
+          );
+        }
+        ints.push(index);
+      },
+    );
 
     let digits = ints
       .map(function (n) {
@@ -130,11 +142,6 @@ var Dashphrase = {};
     return bytes;
   };
 
-  /**
-   * @param {string} passphrase - Same as from Dashphrase.generate(...).
-   * @param {string} salt - Another passphrase (or whatever) to produce a pairwise key.
-   * @returns {Uint8Array} - A new key - the PBKDF2 of the passphrase + "mnemonic" + salt.
-   */
   Dashphrase.toSeed = async function (passphrase, salt = "") {
     passphrase = Dashphrase._normalize(passphrase);
     salt = salt.normalize("NFKD");
@@ -155,9 +162,16 @@ var Dashphrase = {};
 
     return new Uint8Array(keyAB);
   };
+  //@ts-ignore
   Dashphrase.pbkdf2 = Dashphrase.toSeed;
 
-  // same as above, but you provide the bytes
+  /**
+   * @param {Uint8Array} bytes
+   * @param {Uint8Array} salt
+   * @param {Number} iterations - always 2048 for us
+   * @param {Number} bitLen - always 512 for us
+   * @param {String} hashname - always SHA-512 for us
+   */
   Dashphrase._pbkdf2 = async function deriveKey(
     bytes,
     salt,
@@ -194,9 +208,9 @@ var Dashphrase = {};
   /**
    * @param {string} passphrase - Same as from Dashphrase.generate(...).
    * @param {string} salt - Another passphrase (or whatever) to produce a pairwise key.
-   * @returns {Uint8Array} - A new pairwise key - the SHA-256 of passphrase + salt.
+   * @returns {Promise<Uint8Array>} - A new pairwise key - the SHA-256 of passphrase + salt.
    */
-  Dashphrase.sha256 = async function (passphrase, salt = "") {
+  Dashphrase._sha256 = async function (passphrase, salt = "") {
     passphrase = Dashphrase._normalize(passphrase);
     salt = salt.normalize("NFKD");
 
@@ -226,9 +240,47 @@ var Dashphrase = {};
       .normalize("NFKD")
       .split(" ");
 
-  if ("undefined" !== typeof module) {
-    module.exports = Dashphrase;
-  } else {
-    window.Dashphrase = Dashphrase;
-  }
-})(("undefined" !== typeof module && {}) || window);
+  return Dashphrase;
+})(globalThis.window || {}, Dashphrase);
+if ("object" === typeof module) {
+  module.exports = Dashphrase;
+}
+
+// Function Definitions
+
+/**
+ * @callback EntropyEncode
+ * @param {Uint8Array|Array<Number>} bytes - The bytes to encode as a word list
+ * @returns {Promise<String>} - The passphrase will be a space-delimited list of 12,
+ *                     15, 18, 21, or 24 words from the "base2048" word list
+ *                     dictionary.
+ */
+
+/**
+ * @callback PhraseChecksum
+ * @param {string} passphrase - Same as from Dashphrase.generate(...).
+ * @returns {Promise<Boolean>} - True if the leftover checksum bits (4, 5, 6, 7, or 8)
+ *                      match the expected values.
+ */
+
+/**
+ * @callback PhraseDecode
+ * @param {string} passphrase - The word list to decode to bytes
+ * @returns {Promise<Uint8Array>} - The byte representation of the passphrase.
+ */
+
+/**
+ * @callback PhraseGenerate
+ * @param {number} bitLen - The target entropy - must be 128, 160, 192, 224,
+ *                          or 256 bits.
+ * @returns {Promise<String>} - The passphrase will be a space-delimited list of 12,
+ *                     15, 18, 21, or 24 words from the "base2048" word list
+ *                     dictionary.
+ */
+
+/**
+ * @callback PhraseToSeed
+ * @param {string} passphrase - Same as from Dashphrase.generate(...).
+ * @param {string} salt - Another passphrase (or whatever) to produce a pairwise key.
+ * @returns {Promise<Uint8Array>} - A new key - the PBKDF2 of the passphrase + "mnemonic" + salt.
+ */
