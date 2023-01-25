@@ -1,11 +1,12 @@
 /**
  * @typedef Dashphrase
  * @prop {Array<String>} base2048
- * @prop {PhraseChecksum} checksum
+ * @prop {PhraseVerify} checksum - deprecated (use verify)
  * @prop {PhraseDecode} decode
  * @prop {EntropyEncode} encode
  * @prop {PhraseGenerate} generate
  * @prop {PhraseToSeed} toSeed
+ * @prop {PhraseVerify} verify
  * @prop {String} _mword - magic salt prefix
  * @prop {Function} _normalize - strings to NFKD form
  * @prop {Function} _pbkdf2 - the raw PBKDF2 function
@@ -81,12 +82,13 @@ var Dashphrase = (globalThis.require && exports) || {};
     return words.join(" ");
   };
 
-  Dashphrase.checksum = async function (passphrase) {
+  Dashphrase.verify = async function (passphrase) {
     await Dashphrase.decode(passphrase);
     return true;
   };
+  Dashphrase.checksum = Dashphrase.verify;
 
-  Dashphrase.decode = async function (passphrase) {
+  Dashphrase.decode = async function (passphrase, opts) {
     passphrase = Dashphrase._normalize(passphrase);
 
     // there must be 12, 15, 18, 21, or 24 words
@@ -134,9 +136,11 @@ var Dashphrase = (globalThis.require && exports) || {};
     let hash = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
     let expected = hash[0].toString(2).padStart(8, "0").slice(0, sumBitLen);
     if (expected !== checksum) {
-      throw new Error(
-        `dashphrase.js: bad checksum: expected '${expected}' but got '${checksum}'`,
-      );
+      if (false !== opts?.verify) {
+        throw new Error(
+          `dashphrase.js: bad checksum: expected '${expected}' but got '${checksum}'`,
+        );
+      }
     }
 
     return bytes;
@@ -257,7 +261,7 @@ if ("object" === typeof module) {
  */
 
 /**
- * @callback PhraseChecksum
+ * @callback PhraseVerify
  * @param {string} passphrase - Same as from Dashphrase.generate(...).
  * @returns {Promise<Boolean>} - True if the leftover checksum bits (4, 5, 6, 7, or 8)
  *                      match the expected values.
@@ -265,8 +269,14 @@ if ("object" === typeof module) {
 
 /**
  * @callback PhraseDecode
- * @param {string} passphrase - The word list to decode to bytes
+ * @param {String} passphrase - The word list to decode to bytes
+ * @param {PhraseDecodeOpts} [opts]
  * @returns {Promise<Uint8Array>} - The byte representation of the passphrase.
+ */
+
+/**
+ * @typedef PhraseDecodeOpts
+ * @prop {Boolean} verify - true by default, set to false to ignore checksum
  */
 
 /**

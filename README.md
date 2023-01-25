@@ -95,7 +95,7 @@ Derivation_ on that _entropy_ we get the "_seed_". Described as JSON:
 
 - generate
   - encode
-- checksum
+- verify (checksum)
   - decode
 - toSeed
 - base2048.includes
@@ -120,28 +120,29 @@ await Dashphrase.encode(bytes);
 // "abstract way divert acid useless legend advance theme youth"
 ```
 
-### Dashphrase.checksum(passphrase)
+### Dashphrase.verify(passphrase)
 
 We all make mistakes. Especially typos.
 
 Running the checksum can't guarantee that the passphrase is correct, but most
 typos - such as `brocolli` instead of `broccoli` - will cause it to fail, so
-that's a start.
+that's a start. \
+(although this _does_ check the checksum as well)
 
 ```js
 let passphrase = "often delay margin arch ...";
-await Dashphrase.checksum(passphrase); // true
+await Dashphrase.verify(passphrase); // true
 ```
 
 ```js
 let passphrase = "often delay margin arch TYPO";
-await Dashphrase.checksum(passphrase).catch(function (err) {
+await Dashphrase.verify(passphrase).catch(function (err) {
   // checksum failed?
   throw err;
 });
 ```
 
-### Dashphrase.decode(words)
+### Dashphrase.decode(words, { verify: true })
 
 Decode an string of space-delimited words from the Base2048 dictionary into a
 Uint8Array.
