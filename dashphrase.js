@@ -281,8 +281,7 @@ if ("object" === typeof module) {
 
 /**
  * @callback PhraseGenerate
- * @param {number} bitLen - The target entropy - must be 128, 160, 192, 224,
- *                          or 256 bits.
+ * @param {number} [bitLen] - Target entropy - 128 (default), 160, 192, 224, or 256
  * @returns {Promise<String>} - The passphrase will be a space-delimited list of 12,
  *                     15, 18, 21, or 24 words from the "base2048" word list
  *                     dictionary.
