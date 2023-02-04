@@ -20,7 +20,7 @@ var Dashphrase = (globalThis.require && exports) || {};
 (function (window, Dashphrase) {
   "use strict";
 
-  let crypto = window.crypto || require("node:crypto");
+  let crypto = globalThis.crypto || require("node:crypto");
 
   // See BIP-39 Spec at https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 
