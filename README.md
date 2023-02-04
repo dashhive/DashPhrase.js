@@ -31,7 +31,7 @@ Lightweight. Zero dependencies. 20kb (17kb min, 7.4kb gz) ~150 LoC. \
 
 ## Install
 
-**Node** & **Bundlers**:
+**Node**, **Bun**, & **Bundlers**:
 
 ```sh
 npm install --save dashphrase@1.2.2
@@ -80,14 +80,30 @@ zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong
 
 That's eleven (11) 'zoo's and one (1) 'wrong'.
 
-If we decode that, we get the "_input entropy_". If we run the appropriate _Key
-Derivation_ on that _entropy_ we get the "_seed_". Described as JSON:
+If we decode that, we get the "_input entropy_". \
+For extra entropy / projection, we can also use a "_secret salt_". \
+If we run the appropriate _Key Derivation_ on those we the "_seed_". \
+Described as JSON:
+
+With _secret salt_:
 
 ```json
 {
   "inputEntropy": "ffffffffffffffffffffffffffffffff",
-  "mnemonic": "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong",
+  "passphraseMnemonic": "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong",
+  "secretSalt": "TREZOR",
   "seed": "ac27495480225222079d7be181583751e86f571027b0497b5b5d11218e0a8a13332572917f0f8e5a589620c6f15b11c61dee327651a14c34e18231052e48c069"
+}
+```
+
+Empty _secret salt_:
+
+```json
+{
+  "inputEntropy": "ffffffffffffffffffffffffffffffff",
+  "passphraseMnemonic": "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong",
+  "secretSalt": "",
+  "seed": "b6a6d8921942dd9806607ebc2750416b289adea669198769f2e15ed926c3aa92bf88ece232317b4ea463e84b0fcd3b53577812ee449ccc448eb45e6f544e25b6"
 }
 ```
 
