@@ -1,4 +1,4 @@
-# [dashphrase.js][dashphrasejs] (for browsers)
+# [DashPhrase.js][dashphrasejs] (for browsers)
 
 Secure Dash HD Wallet Passphrase Generator that works in Node, Bundlers, and
 Browsers.
@@ -40,7 +40,7 @@ npm install --save dashphrase@1.2.2
 ```js
 "use strict";
 
-let Dashphrase = require("dashphrase");
+let DashPhrase = require("dashphrase");
 ```
 
 **Browsers**
@@ -50,7 +50,7 @@ let Dashphrase = require("dashphrase");
 <script type="module">
   "use strict";
 
-  let Dashphrase = window.Dashphrase;
+  let DashPhrase = window.DashPhrase;
   // ...
 </script>
 ```
@@ -58,21 +58,21 @@ let Dashphrase = require("dashphrase");
 ## Usage
 
 ```js
-let passphrase = await Dashphrase.generate(128);
+let passphrase = await DashPhrase.generate(128);
 // often delay margin arch
 // index wrap fault duck
 // club fabric demise scout
 
-let keyBytes = await Dashphrase.toSeed(passphrase);
+let keyBytes = await DashPhrase.toSeed(passphrase);
 // Uint8Array[64] (suitable for use with importKey for AES, etc)
 
-let fooKeyBytes = await Dashphrase.toSeed(passphrase, "foo");
+let fooKeyBytes = await DashPhrase.toSeed(passphrase, "foo");
 // Uint8Array[64] (a completely different key, determined by "foo")
 ```
 
 ## Fixture
 
-This is the official Dashphrase test phrase:
+This is the official DashPhrase test phrase:
 
 ```text
 zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong
@@ -116,15 +116,15 @@ Empty _secret salt_:
 - toSeed
 - base2048.includes
 
-### Dashphrase.generate(bitlen)
+### DashPhrase.generate(bitlen)
 
 Generate a "Base2048" passphrase - each word represents 11 bits of entropy.
 
 ```js
-await Dashphrase.generate(bitLen); // *128*, 160, 192, 224, or 256
+await DashPhrase.generate(bitLen); // *128*, 160, 192, 224, or 256
 ```
 
-### Dashphrase.encode(bytes)
+### DashPhrase.encode(bytes)
 
 Encode an array of 16, 20, 24, 28, or 32 bytes (typically a `Uint8Array`) into a
 passphrase using the Base2048 word list dictionary.
@@ -132,11 +132,11 @@ passphrase using the Base2048 word list dictionary.
 ```js
 let bytes = Uint8Array.from([0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255]);
 
-await Dashphrase.encode(bytes);
+await DashPhrase.encode(bytes);
 // "abstract way divert acid useless legend advance theme youth"
 ```
 
-### Dashphrase.verify(passphrase)
+### DashPhrase.verify(passphrase)
 
 We all make mistakes. Especially typos.
 
@@ -147,18 +147,18 @@ that's a start. \
 
 ```js
 let passphrase = "often delay margin arch ...";
-await Dashphrase.verify(passphrase); // true
+await DashPhrase.verify(passphrase); // true
 ```
 
 ```js
 let passphrase = "often delay margin arch TYPO";
-await Dashphrase.verify(passphrase).catch(function (err) {
+await DashPhrase.verify(passphrase).catch(function (err) {
   // checksum failed?
   throw err;
 });
 ```
 
-### Dashphrase.decode(words, { verify: true })
+### DashPhrase.decode(words, { verify: true })
 
 Decode an string of space-delimited words from the Base2048 dictionary into a
 Uint8Array.
@@ -169,37 +169,37 @@ the checksum does not match.
 ```js
 let words = "abstract way divert acid useless legend advance theme youth";
 
-await Dashphrase.decode(words);
+await DashPhrase.decode(words);
 // Uint8Array[12] <0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255>
 ```
 
-### Dashphrase.toSeed(passphraseMnemonic, saltPassword)
+### DashPhrase.toSeed(passphraseMnemonic, saltPassword)
 
 Generate a private key seed or encryption key based on the passphrase (mnemonic
 word list) and some other string - whether a salt, a password, another
 passphrase or secret, or an id of some kind.
 
 ```js
-await Dashphrase.toSeed(passphraseMnemonic, saltPassword || ""); // Uint8Array[64]
+await DashPhrase.toSeed(passphraseMnemonic, saltPassword || ""); // Uint8Array[64]
 ```
 
-### Dashphrase.base2048.includes(word)
+### DashPhrase.base2048.includes(word)
 
 Check if a given word exists in the base2048 dictionary.
 
 ```js
-Dashphrase.base2048.includes("broccoli"); // true
+DashPhrase.base2048.includes("broccoli"); // true
 ```
 
 ```js
-Dashphrase.base2048.includes("brocolli"); // false
+DashPhrase.base2048.includes("brocolli"); // false
 ```
 
 #### Get all misspelled words
 
 ```js
 "hammer spoon brocolli zoo".split(" ").filter(function (word) {
-  return word && !Dashphrase.base2048.includes(word);
+  return word && !DashPhrase.base2048.includes(word);
 });
 // [ "brocolli" ]
 ```
