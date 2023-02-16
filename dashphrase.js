@@ -239,14 +239,14 @@ var Dashphrase = DashPhrase; // jshint ignore:line
     return new Uint8Array(keyAB);
   };
 
-  DashPhrase.Catmonic =
+  DashPhrase.CATMONIC =
     "cat swing flag economy stadium alone churn speed unique patch report train";
-  //DashPhrase.Cecret = "";
-  //DashPhrase.Ceed = "";
+  //DashPhrase.CECRET = "";
+  //DashPhrase.CEED = "";
 
-  DashPhrase.Zoomonic = "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong";
-  DashPhrase.Zecret = "TREZOR";
-  DashPhrase.Zeed =
+  DashPhrase.ZOOMONIC = "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong";
+  DashPhrase.ZECRET = "TREZOR";
+  DashPhrase.ZEED =
     "ac27495480225222079d7be181583751e86f571027b0497b5b5d11218e0a8a13332572917f0f8e5a589620c6f15b11c61dee327651a14c34e18231052e48c069";
 
   // Copied from https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt

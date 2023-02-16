@@ -73,10 +73,10 @@ let fooKeyBytes = await DashPhrase.toSeed(passphrase, "foo");
 Values to use for Testing, Demos, Development, and Debugging:
 
 ```js
-DashPhrase.Zoomonic;
-DashPhrase.Zecret;
-DashPhrase.Zeed;
-DashPhrase.Catmonic;
+DashPhrase.ZOOMONIC;
+DashPhrase.ZECRET;
+DashPhrase.ZEED;
+DashPhrase.CATMONIC;
 ```
 
 ## Fixture
@@ -131,9 +131,10 @@ Empty _secret salt_:
   - decode
 - toSeed
 - base2048.includes
-- Zoomonic
-- Zecret
-- Zeed
+- CATMONIC
+- ZOOMONIC
+- ZECRET
+- ZEED
 
 ### DashPhrase.generate(bitlen)
 
@@ -223,19 +224,25 @@ DashPhrase.base2048.includes("brocolli"); // false
 // [ "brocolli" ]
 ```
 
-### DashPhrase.Catmonic
+### DashPhrase.CATMONIC
 
 A secondary Passphrase Mnemonic for documentation, examples, testing, etc. \
 (use when you need something that appears more random)
 
 ```text
 cat swing flag economy stadium alone churn speed unique patch report train
+
+TREZOR
+
+deb5f45449e615feff5640f2e49f933ff51895de3b4381832b3139941c57b59205a42480c52175b6efcffaa58a2503887c1e8b363a707256bdd2b587b46541f5
 ```
 
 (included in canonical test vector, chosen for being friendly & pleasant) \
-(and still fits in 80 characters)
+(and still fits in 80 characters) \
+(and everybody loves cats) \
+(except me)
 
-### DashPhrase.Zoomonic
+### DashPhrase.ZOOMONIC
 
 The Passphrase Mnemonic to use for documentation, examples, testing, etc.
 
@@ -245,7 +252,7 @@ zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong
 
 (chosen for being easy to remember, and funny - the checksum is "wrong")
 
-### DashPhrase.Zecret
+### DashPhrase.ZECRET
 
 The Secret Salt to use for documentation examples, testing & debugging, etc.
 
@@ -253,7 +260,7 @@ The Secret Salt to use for documentation examples, testing & debugging, etc.
 TREZOR
 ```
 
-### DashPhrase.Zeed
+### DashPhrase.ZEED
 
 The Seed to use for documentation examples, testing & debugging, etc.
 
