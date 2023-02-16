@@ -1,4 +1,4 @@
-# [DashPhrase.js][dashphrasejs] (for browsers)
+# [DashPhrase.js][dashphrasejs]
 
 Secure Dash HD Wallet Passphrase Generator that works in Node, Bundlers, and
 Browsers.
