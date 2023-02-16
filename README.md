@@ -59,9 +59,9 @@ let DashPhrase = require("dashphrase");
 
 ```js
 let passphrase = await DashPhrase.generate(128);
-// often delay margin arch
-// index wrap fault duck
-// club fabric demise scout
+// cat swing flag economy
+// stadium alone churn speed
+// unique patch report train
 
 let keyBytes = await DashPhrase.toSeed(passphrase);
 // Uint8Array[64] (suitable for use with importKey for AES, etc)
@@ -70,12 +70,28 @@ let fooKeyBytes = await DashPhrase.toSeed(passphrase, "foo");
 // Uint8Array[64] (a completely different key, determined by "foo")
 ```
 
+Values to use for Testing, Demos, Development, and Debugging:
+
+```js
+DashPhrase.Zoomonic;
+DashPhrase.Zecret;
+DashPhrase.Zeed;
+DashPhrase.Catmonic;
+```
+
 ## Fixture
 
-This is the official DashPhrase test phrase:
+The canonical DASH _Passphrase Mnemonic_, _Secret Salt_, & _Seed_ test values
+are:
 
 ```text
 zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong
+```
+
+Or, for the times you need something that _looks_ random:
+
+```text
+cat swing flag economy stadium alone churn speed unique patch report train
 ```
 
 That's eleven (11) 'zoo's and one (1) 'wrong'.
@@ -115,6 +131,9 @@ Empty _secret salt_:
   - decode
 - toSeed
 - base2048.includes
+- Zoomonic
+- Zecret
+- Zeed
 
 ### DashPhrase.generate(bitlen)
 
@@ -202,6 +221,44 @@ DashPhrase.base2048.includes("brocolli"); // false
   return word && !DashPhrase.base2048.includes(word);
 });
 // [ "brocolli" ]
+```
+
+### DashPhrase.Catmonic
+
+A secondary Passphrase Mnemonic for documentation, examples, testing, etc. \
+(use when you need something that appears more random)
+
+```text
+cat swing flag economy stadium alone churn speed unique patch report train
+```
+
+(included in canonical test vector, chosen for being friendly & pleasant) \
+(and still fits in 80 characters)
+
+### DashPhrase.Zoomonic
+
+The Passphrase Mnemonic to use for documentation, examples, testing, etc.
+
+```text
+zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong
+```
+
+(chosen for being easy to remember, and funny - the checksum is "wrong")
+
+### DashPhrase.Zecret
+
+The Secret Salt to use for documentation examples, testing & debugging, etc.
+
+```text
+TREZOR
+```
+
+### DashPhrase.Zeed
+
+The Seed to use for documentation examples, testing & debugging, etc.
+
+```text
+ac27495480225222079d7be181583751e86f571027b0497b5b5d11218e0a8a13332572917f0f8e5a589620c6f15b11c61dee327651a14c34e18231052e48c069
 ```
 
 ## Compatibility Testing
