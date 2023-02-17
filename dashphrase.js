@@ -7,6 +7,10 @@
  * @prop {PhraseGenerate} generate
  * @prop {PhraseToSeed} toSeed
  * @prop {PhraseVerify} verify
+ * @prop {String} CATMONIC
+ * @prop {String} ZOOMONIC
+ * @prop {String} ZECRET
+ * @prop {String} ZEED
  * @prop {String} _mword - magic salt prefix
  * @prop {Function} _normalize - strings to NFKD form
  * @prop {Function} _pbkdf2 - the raw PBKDF2 function
