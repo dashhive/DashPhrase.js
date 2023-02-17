@@ -147,8 +147,8 @@ var Dashphrase = DashPhrase; // jshint ignore:line
     return bytes;
   };
 
-  DashPhrase.toSeed = async function (passphrase, salt = "", opts) {
-    let shouldVerify = false !== opts?.verify;
+  DashPhrase.toSeed = async function (passphrase, salt = "", opts = {}) {
+    let shouldVerify = false !== opts.verify;
     if (shouldVerify) {
       await DashPhrase.verify(passphrase);
     }
