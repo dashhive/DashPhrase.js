@@ -107,9 +107,12 @@ var Dashphrase = DashPhrase; // jshint ignore:line
         // 0-2047 (11-bit ints)
         let index = DashPhrase.base2048.indexOf(word);
         if (index < 0) {
-          throw new Error(
+          let err = new Error(
             `dashphrase.js: decode failed: unknown word '${word}'`,
           );
+          //@ts-ignore - allow code on Error
+          err.code = "E_UNKNOWN_WORD";
+          throw err;
         }
         ints.push(index);
       },
@@ -142,9 +145,12 @@ var Dashphrase = DashPhrase; // jshint ignore:line
     let expected = hash[0].toString(2).padStart(8, "0").slice(0, sumBitLen);
     if (expected !== checksum) {
       if (false !== opts?.verify) {
-        throw new Error(
+        let err = new Error(
           `dashphrase.js: bad checksum: expected '${expected}' but got '${checksum}'`,
         );
+        //@ts-ignore
+        err.code = "E_BAD_CHECKSUM";
+        throw err;
       }
     }
 

@@ -131,6 +131,9 @@ Empty _secret salt_:
   - decode
 - toSeed
 - base2048.includes
+- Errors
+  - `E_UNKNOWN_WORD`
+  - `E_BAD_CHECKSUM`
 - CATMONIC
 - ZOOMONIC
 - ZECRET
@@ -225,6 +228,11 @@ DashPhrase.base2048.includes("brocolli"); // false
 });
 // [ "brocolli" ]
 ```
+
+### Errors
+
+- `E_UNKNOWN_WORD` - at least one the given words is not in the word list
+- `E_BAD_CHECKSUM` - words were good, but checksum failed
 
 ### DashPhrase.CATMONIC
 
