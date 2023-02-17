@@ -88,7 +88,7 @@ var Dashphrase = DashPhrase; // jshint ignore:line
   };
 
   DashPhrase.verify = async function (passphrase) {
-    await DashPhrase.decode(passphrase);
+    void (await DashPhrase.decode(passphrase));
     return true;
   };
   DashPhrase.checksum = DashPhrase.verify;
@@ -139,9 +139,10 @@ var Dashphrase = DashPhrase; // jshint ignore:line
     }
 
     // the original random bytes used to generate the 12-24 words
-    let bytes = Uint8Array.from(bytesArr);
+    let entropyBytes = Uint8Array.from(bytesArr);
 
-    let hash = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+    let shaAb = await crypto.subtle.digest("SHA-256", entropyBytes);
+    let hash = new Uint8Array(shaAb);
     let expected = hash[0].toString(2).padStart(8, "0").slice(0, sumBitLen);
     if (expected !== checksum) {
       if (false !== opts?.verify) {
@@ -154,7 +155,7 @@ var Dashphrase = DashPhrase; // jshint ignore:line
       }
     }
 
-    return bytes;
+    return entropyBytes;
   };
 
   DashPhrase.toSeed = async function (passphrase, salt = "", opts = {}) {

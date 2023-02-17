@@ -192,7 +192,7 @@ the checksum does not match.
 ```js
 let words = "abstract way divert acid useless legend advance theme youth";
 
-await DashPhrase.decode(words);
+let entropy = await DashPhrase.decode(words);
 // Uint8Array[12] <0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255>
 ```
 
