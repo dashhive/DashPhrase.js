@@ -147,7 +147,12 @@ var Dashphrase = DashPhrase; // jshint ignore:line
     return bytes;
   };
 
-  DashPhrase.toSeed = async function (passphrase, salt = "") {
+  DashPhrase.toSeed = async function (passphrase, salt = "", opts) {
+    let shouldVerify = false !== opts?.verify;
+    if (shouldVerify) {
+      await DashPhrase.verify(passphrase);
+    }
+
     passphrase = DashPhrase._normalize(passphrase);
     salt = salt.normalize("NFKD");
 
@@ -300,5 +305,11 @@ if ("object" === typeof module) {
  * @callback PhraseToSeed
  * @param {string} passphrase - Same as from DashPhrase.generate(...).
  * @param {string} salt - Another passphrase (or whatever) to produce a pairwise key.
+ * @param {PhraseToSeedOptions} opts - verify is true by default
  * @returns {Promise<Uint8Array>} - A new key - the PBKDF2 of the passphrase + "mnemonic" + salt.
+ */
+
+/**
+ * @typedef PhraseToSeedOptions
+ * @prop {Boolean?} [verify]
  */

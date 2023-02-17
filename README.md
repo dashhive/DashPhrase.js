@@ -193,7 +193,7 @@ await DashPhrase.decode(words);
 // Uint8Array[12] <0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255>
 ```
 
-### DashPhrase.toSeed(passphraseMnemonic, saltPassword)
+### DashPhrase.toSeed(passphraseMnemonic, saltPassword, { verify: true })
 
 Generate a private key seed or encryption key based on the passphrase (mnemonic
 word list) and some other string - whether a salt, a password, another
@@ -202,6 +202,8 @@ passphrase or secret, or an id of some kind.
 ```js
 await DashPhrase.toSeed(passphraseMnemonic, saltPassword || ""); // Uint8Array[64]
 ```
+
+If you'd like to skip the word and checksum checks, pass `{ verify: false }`.
 
 ### DashPhrase.base2048.includes(word)
 
