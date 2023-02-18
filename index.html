@@ -11,7 +11,7 @@
         <a href="https://github.com/dashhive/dashphrase.js">Dashphrase.js</a>
       </h1>
       <p>
-        <strong>Dash HD Wallet Passphrase &amp; Key Generator</strong>
+        <strong>Dash HD Wallet Recovery Phrase &amp; Seed Generator</strong>
         <br />
         <small>works in Node, Bundlers, and Browsers</small>
       </p>
@@ -31,14 +31,19 @@
 
     <main>
       <section>
-        <button class="js-generate">Generate New Passphrase</button>
+        <button class="js-generate">Generate New Recovery Phrase</button>
       </section>
       <section>
         <form>
           <label
-            >Passphrase:
-            <textarea class="js-passphrase" cols="25" rows="4">
-ozone drill grab fiber curtain grace pudding thank cruise elder eight picnic</textarea
+            >Recovery Phrase:
+            <textarea
+              class="js-recovery-phrase"
+              cols="25"
+              rows="4"
+              placeholder="zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong"
+            >
+cat swing flag economy stadium alone churn speed unique patch report train</textarea
             >
           </label>
           <label
@@ -46,12 +51,12 @@ ozone drill grab fiber curtain grace pudding thank cruise elder eight picnic</te
             <input class="js-salt" value="TREZOR" />
           </label>
 
-          <button type="submit">Derive Key</button>
+          <button type="submit">Derive Seed</button>
         </form>
       </section>
 
       <section>
-        <pre>Key: <code class="js-key"></code></pre>
+        <pre>Seed: <code class="js-key"></code></pre>
       </section>
 
       <hr />
@@ -82,38 +87,38 @@ ozone drill grab fiber curtain grace pudding thank cruise elder eight picnic</te
         throw err;
       }
 
-      async function deriveKey() {
-        let passphrase = $(".js-passphrase").value;
+      async function deriveSeed() {
+        let recoveryPhrase = $(".js-recovery-phrase").value;
         let salt = $(".js-salt").value;
 
-        await Dashphrase.checksum(passphrase).catch(rethrow);
-        let key = await Dashphrase.toSeed(passphrase, salt);
-        $(".js-key").innerText = PassphraseTest.bytesToHex(key);
+        await Dashphrase.checksum(recoveryPhrase).catch(rethrow);
+        let key = await Dashphrase.toSeed(recoveryPhrase, salt);
+        $(".js-key").innerText = DashPhraseTest.bytesToHex(key);
       }
 
       $(".js-generate").addEventListener("click", async function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
 
-        let passphrase = await Dashphrase.generate(128).catch(rethrow);
-        await Dashphrase.checksum(passphrase).catch(rethrow);
-        $(".js-passphrase").value = passphrase;
-        await deriveKey();
+        let recoveryPhrase = await Dashphrase.generate(128).catch(rethrow);
+        await Dashphrase.checksum(recoveryPhrase).catch(rethrow);
+        $(".js-recovery-phrase").value = recoveryPhrase;
+        await deriveSeed();
       });
 
       $("form").addEventListener("submit", async function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
 
-        await deriveKey();
+        await deriveSeed();
       });
 
-      deriveKey().catch(rethrow);
+      deriveSeed().catch(rethrow);
     </script>
 
     <script src="./test.js"></script>
     <script>
-      PassphraseTest.run()
+      DashPhraseTest.run()
         .then(function () {
           document.querySelector(".js-tests").innerText = "All Tests Pass";
         })

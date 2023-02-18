@@ -1,10 +1,10 @@
 # [DashPhrase.js][dashphrasejs]
 
-Secure Dash HD Wallet Passphrase Generator that works in Node, Bundlers, and
-Browsers.
+Secure HD Wallet _Recovery Phrase_ Generator for that works in Node, Bundlers,
+and Browsers.
 
 [BIP-39][bip39]-compatible \
-<small>uses standard dictionary of Base2048 mnemonic passphrases (word lists)</small>
+<small>uses the standard "mnemonic" dictionary for Base2048 words</small>
 
 Lightweight. Zero dependencies. 20kb (17kb min, 7.4kb gz) ~150 LoC. \
 <small>(most of the package weight is due to the base2048 word list)</small>
@@ -16,7 +16,7 @@ Lightweight. Zero dependencies. 20kb (17kb min, 7.4kb gz) ~150 LoC. \
 
 - [x] Base2048 (BIP-0039 compliant)
 - [x] Easy to retype on different devices
-- [x] Seed many, distinct keys from a single passphrase
+- [x] Seed many, distinct keys from a single recovery phrase
 - [x] Keys for AES Encryption & Decryption
 - [x] Air Gap security
 - [x] Cryptocurrency wallets
@@ -58,15 +58,15 @@ let DashPhrase = require("dashphrase");
 ## Usage
 
 ```js
-let passphrase = await DashPhrase.generate(128);
+let recoveryPhrase = await DashPhrase.generate(128);
 // cat swing flag economy
 // stadium alone churn speed
 // unique patch report train
 
-let keyBytes = await DashPhrase.toSeed(passphrase);
+let keyBytes = await DashPhrase.toSeed(recoveryPhrase);
 // Uint8Array[64] (suitable for use with importKey for AES, etc)
 
-let fooKeyBytes = await DashPhrase.toSeed(passphrase, "foo");
+let fooKeyBytes = await DashPhrase.toSeed(recoveryPhrase, "foo");
 // Uint8Array[64] (a completely different key, determined by "foo")
 ```
 
@@ -79,19 +79,15 @@ DashPhrase.ZEED;
 DashPhrase.CATMONIC;
 ```
 
-## Fixture
+## Test Fixtures
 
-The canonical DASH _Passphrase Mnemonic_, _Secret Salt_, & _Seed_ test values
-are:
+### Zoomonic
+
+The canonical DASH _Recovery Phrase_ (mnemonic), _Secret Salt_, & _Seed_ test
+values are:
 
 ```text
 zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong
-```
-
-Or, for the times you need something that _looks_ random:
-
-```text
-cat swing flag economy stadium alone churn speed unique patch report train
 ```
 
 That's eleven (11) 'zoo's and one (1) 'wrong'.
@@ -106,7 +102,7 @@ With _secret salt_:
 ```json
 {
   "inputEntropy": "ffffffffffffffffffffffffffffffff",
-  "passphraseMnemonic": "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong",
+  "recoveryPhrase": "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong",
   "secretSalt": "TREZOR",
   "seed": "ac27495480225222079d7be181583751e86f571027b0497b5b5d11218e0a8a13332572917f0f8e5a589620c6f15b11c61dee327651a14c34e18231052e48c069"
 }
@@ -117,10 +113,18 @@ Empty _secret salt_:
 ```json
 {
   "inputEntropy": "ffffffffffffffffffffffffffffffff",
-  "passphraseMnemonic": "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong",
+  "recoveryPhrase": "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong",
   "secretSalt": "",
   "seed": "b6a6d8921942dd9806607ebc2750416b289adea669198769f2e15ed926c3aa92bf88ece232317b4ea463e84b0fcd3b53577812ee449ccc448eb45e6f544e25b6"
 }
+```
+
+### Catmonic
+
+Or, for the times you need something that _looks_ random:
+
+```text
+cat swing flag economy stadium alone churn speed unique patch report train
 ```
 
 ## API
@@ -141,7 +145,8 @@ Empty _secret salt_:
 
 ### DashPhrase.generate(bitlen)
 
-Generate a "Base2048" passphrase - each word represents 11 bits of entropy.
+Generate a "Base2048" recovery phrase.\
+(each word represents 11 bits of entropy)
 
 ```js
 await DashPhrase.generate(bitLen); // *128*, 160, 192, 224, or 256
@@ -150,7 +155,7 @@ await DashPhrase.generate(bitLen); // *128*, 160, 192, 224, or 256
 ### DashPhrase.encode(bytes)
 
 Encode an array of 16, 20, 24, 28, or 32 bytes (typically a `Uint8Array`) into a
-passphrase using the Base2048 word list dictionary.
+recovery phrase using the Base2048 word list dictionary.
 
 ```js
 let bytes = Uint8Array.from([0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255]);
@@ -159,23 +164,23 @@ await DashPhrase.encode(bytes);
 // "abstract way divert acid useless legend advance theme youth"
 ```
 
-### DashPhrase.verify(passphrase)
+### DashPhrase.verify(recoveryPhrase)
 
 We all make mistakes. Especially typos.
 
-Running the checksum can't guarantee that the passphrase is correct, but most
-typos - such as `brocolli` instead of `broccoli` - will cause it to fail, so
-that's a start. \
+Running the checksum can't guarantee that the recovery phrase is correct, but
+most typos - such as `brocolli` instead of `broccoli` - will cause it to fail,
+so that's a start. \
 (although this _does_ check the checksum as well)
 
 ```js
-let passphrase = "often delay margin arch ...";
-await DashPhrase.verify(passphrase); // true
+let recoveryPhrase = "often delay margin arch ...";
+await DashPhrase.verify(recoveryPhrase); // true
 ```
 
 ```js
-let passphrase = "often delay margin arch TYPO";
-await DashPhrase.verify(passphrase).catch(function (err) {
+let recoveryPhrase = "often delay margin arch TYPO";
+await DashPhrase.verify(recoveryPhrase).catch(function (err) {
   // checksum failed?
   throw err;
 });
@@ -196,14 +201,14 @@ let entropy = await DashPhrase.decode(words);
 // Uint8Array[12] <0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255>
 ```
 
-### DashPhrase.toSeed(passphraseMnemonic, saltPassword, { verify: true })
+### DashPhrase.toSeed(recoveryPhrase, saltPassword, { verify: true })
 
-Generate a private key seed or encryption key based on the passphrase (mnemonic
-word list) and some other string - whether a salt, a password, another
-passphrase or secret, or an id of some kind.
+Generate a private key seed or encryption key based on the recovery phrase
+(mnemonic) and some other string - whether a salt, a password, another recovery
+phrase or secret, or an id of some kind.
 
 ```js
-await DashPhrase.toSeed(passphraseMnemonic, saltPassword || ""); // Uint8Array[64]
+await DashPhrase.toSeed(recoveryPhrase, saltPassword || ""); // Uint8Array[64]
 ```
 
 If you'd like to skip the word and checksum checks, pass `{ verify: false }`.
@@ -236,7 +241,8 @@ DashPhrase.base2048.includes("brocolli"); // false
 
 ### DashPhrase.CATMONIC
 
-A secondary Passphrase Mnemonic for documentation, examples, testing, etc. \
+A secondary Recovery Phrase Mnemonic for documentation, examples, testing, etc.
+\
 (use when you need something that appears more random)
 
 ```text
@@ -254,7 +260,7 @@ deb5f45449e615feff5640f2e49f933ff51895de3b4381832b3139941c57b59205a42480c52175b6
 
 ### DashPhrase.ZOOMONIC
 
-The Passphrase Mnemonic to use for documentation, examples, testing, etc.
+The Recovery Phrase Mnemonic to use for documentation, examples, testing, etc.
 
 ```text
 zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong

@@ -36,7 +36,7 @@ var Dashphrase = DashPhrase; // jshint ignore:line
   DashPhrase._mword = "mnemonic";
 
   /**
-   * puts the passphrase in canonical form
+   * puts the recovery phrase in canonical form
    * (UTF-8 NKFD, lowercase, no extra spaces)
    * @param {String} str
    */
@@ -87,19 +87,19 @@ var Dashphrase = DashPhrase; // jshint ignore:line
     return words.join(" ");
   };
 
-  DashPhrase.verify = async function (passphrase) {
-    void (await DashPhrase.decode(passphrase));
+  DashPhrase.verify = async function (recoveryPhrase) {
+    void (await DashPhrase.decode(recoveryPhrase));
     return true;
   };
   DashPhrase.checksum = DashPhrase.verify;
 
-  DashPhrase.decode = async function (passphrase, opts) {
-    passphrase = DashPhrase._normalize(passphrase);
+  DashPhrase.decode = async function (recoveryPhrase, opts) {
+    recoveryPhrase = DashPhrase._normalize(recoveryPhrase);
 
     // there must be 12, 15, 18, 21, or 24 words
     /** @type {Array<Number>} */
     let ints = [];
-    let words = passphrase.split(DashPhrase._sep);
+    let words = recoveryPhrase.split(DashPhrase._sep);
     words.forEach(
       /** @param {String} word */
       function (word) {
@@ -158,16 +158,16 @@ var Dashphrase = DashPhrase; // jshint ignore:line
     return entropyBytes;
   };
 
-  DashPhrase.toSeed = async function (passphrase, salt = "", opts = {}) {
+  DashPhrase.toSeed = async function (recoveryPhrase, salt = "", opts = {}) {
     let shouldVerify = false !== opts.verify;
     if (shouldVerify) {
-      await DashPhrase.verify(passphrase);
+      await DashPhrase.verify(recoveryPhrase);
     }
 
-    passphrase = DashPhrase._normalize(passphrase);
+    recoveryPhrase = DashPhrase._normalize(recoveryPhrase);
     salt = salt.normalize("NFKD");
 
-    let bytes = new TextEncoder().encode(passphrase);
+    let bytes = new TextEncoder().encode(recoveryPhrase);
     let saltBytes = new TextEncoder().encode(DashPhrase._mword + salt);
 
     let bitLen = 512; // 64 bytes
@@ -203,7 +203,7 @@ var Dashphrase = DashPhrase; // jshint ignore:line
     let extractable = false;
 
     // First, create a PBKDF2 "key" containing the password
-    let passphraseKey = await crypto.subtle.importKey(
+    let recoveryPhraseKey = await crypto.subtle.importKey(
       "raw",
       bytes,
       { name: "PBKDF2" },
@@ -215,7 +215,7 @@ var Dashphrase = DashPhrase; // jshint ignore:line
     extractable = true;
     let hmacKey = await crypto.subtle.deriveKey(
       { name: "PBKDF2", salt: salt, iterations: iterations, hash: hashname },
-      passphraseKey,
+      recoveryPhraseKey,
       { name: "HMAC", hash: hashname, length: bitLen }, // Key we want
       extractable, // Extractble
       ["sign", "verify"], // For new key
@@ -227,15 +227,15 @@ var Dashphrase = DashPhrase; // jshint ignore:line
   };
 
   /**
-   * @param {string} passphrase - Same as from DashPhrase.generate(...).
-   * @param {string} salt - Another passphrase (or whatever) to produce a pairwise key.
-   * @returns {Promise<Uint8Array>} - A new pairwise key - the SHA-256 of passphrase + salt.
+   * @param {string} recoveryPhrase - Same as from DashPhrase.generate(...).
+   * @param {string} salt - Another recovery phrase (or whatever) to produce a pairwise key.
+   * @returns {Promise<Uint8Array>} - A new pairwise key - the SHA-256 of recovery phrase + salt.
    */
-  DashPhrase._sha256 = async function (passphrase, salt = "") {
-    passphrase = DashPhrase._normalize(passphrase);
+  DashPhrase._sha256 = async function (recoveryPhrase, salt = "") {
+    recoveryPhrase = DashPhrase._normalize(recoveryPhrase);
     salt = salt.normalize("NFKD");
 
-    let passBytes = new TextEncoder().encode(passphrase);
+    let passBytes = new TextEncoder().encode(recoveryPhrase);
     let saltBytes = new TextEncoder().encode(salt);
     let keyBytes = new Uint8Array(passBytes.length + saltBytes.length);
 
@@ -280,23 +280,23 @@ if ("object" === typeof module) {
 /**
  * @callback EntropyEncode
  * @param {Uint8Array|Array<Number>} bytes - The bytes to encode as a word list
- * @returns {Promise<String>} - The passphrase will be a space-delimited list of 12,
+ * @returns {Promise<String>} - The recovery phrase will be a space-delimited list of 12,
  *                     15, 18, 21, or 24 words from the "base2048" word list
  *                     dictionary.
  */
 
 /**
  * @callback PhraseVerify
- * @param {string} passphrase - Same as from DashPhrase.generate(...).
+ * @param {string} recoveryPhrase - Same as from DashPhrase.generate(...).
  * @returns {Promise<Boolean>} - True if the leftover checksum bits (4, 5, 6, 7, or 8)
  *                      match the expected values.
  */
 
 /**
  * @callback PhraseDecode
- * @param {String} passphrase - The word list to decode to bytes
+ * @param {String} recoveryPhrase - The word list to decode to bytes
  * @param {PhraseDecodeOpts} [opts]
- * @returns {Promise<Uint8Array>} - The byte representation of the passphrase.
+ * @returns {Promise<Uint8Array>} - The byte representation of the recovery phrase.
  */
 
 /**
@@ -307,17 +307,17 @@ if ("object" === typeof module) {
 /**
  * @callback PhraseGenerate
  * @param {number} [bitLen] - Target entropy - 128 (default), 160, 192, 224, or 256
- * @returns {Promise<String>} - The passphrase will be a space-delimited list of 12,
+ * @returns {Promise<String>} - The recovery phrase will be a space-delimited list of 12,
  *                     15, 18, 21, or 24 words from the "base2048" word list
  *                     dictionary.
  */
 
 /**
  * @callback PhraseToSeed
- * @param {string} passphrase - Same as from DashPhrase.generate(...).
- * @param {string} salt - Another passphrase (or whatever) to produce a pairwise key.
+ * @param {string} recoveryPhrase - Same as from DashPhrase.generate(...).
+ * @param {string} salt - Another recovery phrase (or whatever) to produce a pairwise key.
  * @param {PhraseToSeedOptions} opts - verify is true by default
- * @returns {Promise<Uint8Array>} - A new key - the PBKDF2 of the passphrase + "mnemonic" + salt.
+ * @returns {Promise<Uint8Array>} - A new key - the PBKDF2 of the recovery phrase + `mnemonic` + salt.
  */
 
 /**

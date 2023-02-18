@@ -1,13 +1,13 @@
-var PassphraseTest = {};
+var DashPhraseTest = {};
 
 (async function (window) {
   "use strict";
 
-  let Dashphrase = window.Dashphrase || require("./dashphrase.js");
+  let DashPhrase = window.DashPhrase || require("./dashphrase.js");
 
   // Copied from the reference implementation
   // https://github.com/trezor/python-mnemonic/blob/master/vectors.json
-  PassphraseTest.fixtures = [
+  DashPhraseTest.fixtures = [
     [
       "00000000000000000000000000000000",
       "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
@@ -159,7 +159,7 @@ var PassphraseTest = {};
    *                                (0-255).
    * @returns {string} - The hex encoding of said bytes.
    */
-  PassphraseTest.bytesToHex = function (bytes) {
+  DashPhraseTest.bytesToHex = function (bytes) {
     let hex = [];
 
     for (let i = 0, len = bytes.length; i < len; i += 1) {
@@ -198,9 +198,9 @@ var PassphraseTest = {};
     return hex.join("");
   }
 
-  PassphraseTest.hexToBuffer = hexToBuffer;
+  DashPhraseTest.hexToBuffer = hexToBuffer;
 
-  PassphraseTest.run = async function (fixtures = PassphraseTest.fixtures) {
+  DashPhraseTest.run = async function (fixtures = DashPhraseTest.fixtures) {
     await fixtures.reduce(async function (p, test) {
       await p;
 
@@ -208,20 +208,20 @@ var PassphraseTest = {};
       let knownWords = test[1];
       let knownSeed = test[2];
 
-      let words = await Dashphrase.encode(hexToBuffer(knownEnt));
+      let words = await DashPhrase.encode(hexToBuffer(knownEnt));
       if (words !== knownWords) {
         console.warn(knownWords);
         console.warn(words);
         throw new Error("bad word generation");
       }
 
-      let goodChecksum = await Dashphrase.checksum(words);
+      let goodChecksum = await DashPhrase.checksum(words);
       if (!goodChecksum) {
         console.warn(words);
         throw new Error("bad checksum");
       }
 
-      let seedBuf = await Dashphrase.toSeed(words, "TREZOR");
+      let seedBuf = await DashPhrase.toSeed(words, "TREZOR");
       let seed = bufferToHex(seedBuf);
       if (seed !== knownSeed) {
         console.warn(words);
@@ -232,7 +232,7 @@ var PassphraseTest = {};
     }, Promise.resolve());
     console.info("\tPass: Trezor python-mnemonics all pass");
 
-    await Dashphrase.checksum(
+    await DashPhrase.checksum(
       "apple apple apple apple apple apple apple apple apple apple apple apple",
     ).catch(function (err) {
       if (!err.message.includes("checksum")) {
@@ -241,7 +241,7 @@ var PassphraseTest = {};
       console.info("\tPass: bad checksum throws error");
     });
 
-    await Dashphrase.checksum("a a a a a a a a a a a a").catch(function (err) {
+    await DashPhrase.checksum("a a a a a a a a a a a a").catch(function (err) {
       if (!err.message.includes("word")) {
         throw err;
       }
@@ -253,7 +253,7 @@ var PassphraseTest = {};
 
   if ("undefined" !== typeof module) {
     if (require.main === module) {
-      await PassphraseTest.run();
+      await DashPhraseTest.run();
     }
   }
 })(("undefined" !== typeof module && {}) || window);
