@@ -56,7 +56,7 @@ cat swing flag economy stadium alone churn speed unique patch report train</text
       </section>
 
       <section>
-        <pre>Seed: <code class="js-key"></code></pre>
+        <pre>Seed: <code class="js-seed"></code></pre>
       </section>
 
       <hr />
@@ -92,8 +92,8 @@ cat swing flag economy stadium alone churn speed unique patch report train</text
         let salt = $(".js-salt").value;
 
         await Dashphrase.checksum(recoveryPhrase).catch(rethrow);
-        let key = await Dashphrase.toSeed(recoveryPhrase, salt);
-        $(".js-key").innerText = DashPhraseTest.bytesToHex(key);
+        let seedBytes = await Dashphrase.toSeed(recoveryPhrase, salt);
+        $(".js-seed").innerText = DashPhraseTest.bytesToHex(seedBytes);
       }
 
       $(".js-generate").addEventListener("click", async function (ev) {

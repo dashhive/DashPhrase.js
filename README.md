@@ -16,7 +16,7 @@ Lightweight. Zero dependencies. 20kb (17kb min, 7.4kb gz) ~150 LoC. \
 
 - [x] Base2048 (BIP-0039 compliant)
 - [x] Easy to retype on different devices
-- [x] Seed many, distinct keys from a single recovery phrase
+- [x] Create many, distinct seeds from a single recovery phrase
 - [x] Keys for AES Encryption & Decryption
 - [x] Air Gap security
 - [x] Cryptocurrency wallets
@@ -63,11 +63,11 @@ let recoveryPhrase = await DashPhrase.generate(128);
 // stadium alone churn speed
 // unique patch report train
 
-let keyBytes = await DashPhrase.toSeed(recoveryPhrase);
+let seedBytes = await DashPhrase.toSeed(recoveryPhrase);
 // Uint8Array[64] (suitable for use with importKey for AES, etc)
 
-let fooKeyBytes = await DashPhrase.toSeed(recoveryPhrase, "foo");
-// Uint8Array[64] (a completely different key, determined by "foo")
+let fooSeedBytes = await DashPhrase.toSeed(recoveryPhrase, "foo");
+// Uint8Array[64] (a completely different seed, determined by "foo")
 ```
 
 Values to use for Testing, Demos, Development, and Debugging:
@@ -203,9 +203,9 @@ let entropy = await DashPhrase.decode(words);
 
 ### DashPhrase.toSeed(recoveryPhrase, saltPassword, { verify: true })
 
-Generate a private key seed or encryption key based on the recovery phrase
-(mnemonic) and some other string - whether a salt, a password, another recovery
-phrase or secret, or an id of some kind.
+Generate a private key seed (generically useful as an encryption key) based on
+the recovery phrase (mnemonic) and some other string - whether a salt, a
+password, another recovery phrase or secret, or an id of some kind.
 
 ```js
 await DashPhrase.toSeed(recoveryPhrase, saltPassword || ""); // Uint8Array[64]
