@@ -316,7 +316,7 @@ if ("object" === typeof module) {
  * @callback PhraseToSeed
  * @param {string} recoveryPhrase - Same as from DashPhrase.generate(...).
  * @param {string} salt - Another recovery phrase (or whatever) to produce a pairwise key.
- * @param {PhraseToSeedOptions} opts - verify is true by default
+ * @param {PhraseToSeedOptions} [opts] - verify is true by default
  * @returns {Promise<Uint8Array>} - A new seed - the PBKDF2 of the recovery phrase + `mnemonic` + salt.
  */
 
