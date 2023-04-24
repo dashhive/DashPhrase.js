@@ -14,6 +14,7 @@ Lightweight. Zero dependencies. 20kb (17kb min, 7.4kb gz) ~150 LoC. \
 
 ## Features & Use Cases
 
+- [x] [CLI](https://github.com/dashhive/dashphrase-cli)
 - [x] Base2048 (BIP-0039 compliant)
 - [x] Easy to retype on different devices
 - [x] Create many, distinct seeds from a single recovery phrase
@@ -31,7 +32,12 @@ Lightweight. Zero dependencies. 20kb (17kb min, 7.4kb gz) ~150 LoC. \
 
 ## Install
 
-**Node**, **Bun**, & **Bundlers**:
+### CLI
+
+See [`dashphrase-cli`](https://github.com/dashhive/dashphrase-cli):
+- <https://github.com/dashhive/dashphrase-cli>
+
+### Node, Bun, & Bundlers
 
 ```sh
 npm install --save dashphrase@1.2.2
