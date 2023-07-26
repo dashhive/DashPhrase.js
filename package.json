@@ -14,7 +14,8 @@
     "bump": "npm version -m \"chore(release): bump to v%s\"",
     "fmt": "npx -p prettier@2.x -- prettier -w '**/*.{js,md}'",
     "lint": "npx -p typescript@4.x -- tsc -p ./jsconfig.json",
-    "test": "open index.html"
+    "test": "node ./test.js",
+    "test-browser": "open ./index.html"
   },
   "repository": {
     "type": "git",
