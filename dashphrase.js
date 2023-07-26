@@ -25,7 +25,7 @@ var Dashphrase = DashPhrase; // jshint ignore:line
 (function (window, DashPhrase) {
   "use strict";
 
-  let crypto = globalThis.crypto || require("node:crypto");
+  let crypto = globalThis.crypto;
 
   // See BIP-39 Spec at https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 
