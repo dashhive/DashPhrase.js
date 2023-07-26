@@ -35,6 +35,7 @@ Lightweight. Zero dependencies. 20kb (17kb min, 7.4kb gz) ~150 LoC. \
 ### CLI
 
 See [`dashphrase-cli`](https://github.com/dashhive/dashphrase-cli):
+
 - <https://github.com/dashhive/dashphrase-cli>
 
 ### Node, Bun, & Bundlers
